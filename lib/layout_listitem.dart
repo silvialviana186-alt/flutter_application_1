@@ -15,22 +15,37 @@ class HeadingItem implements ListItem {
   }
 
   @override
-  Widget buildSubtitle(BuildContext context) {
-    return const SizedBox.shrink();
-  }
-}
-
-class LayoutListItem extends StatelessWidget {
-  const LayoutListItem({super.key});
+  Widget buildSubtitle(BuildContext context) => const SizedBox.shrink();
 }
 
 class MessageItem implements ListItem {
   final String sender;
   final String body;
   MessageItem(this.sender, this.body);
+
+  @override
+  Widget buildTitle(BuildContext context) => Text(sender);
+
+  @override
+  Widget buildSubtitle(BuildContext context) => Text(body);
 }
 
-@override
-Widget build(BuildContext context) {
-  return const Placeholder();
+final items = List<ListItem>.generate(
+  20,
+  (i) => i % 6 == 0
+      ? HeadingItem('Heading $i')
+      : MessageItem('Sender $i', 'Message body $i'),
+);
+
+ListView buildListView() {
+  return ListView.builder(
+    itemCount: items.length,
+    itemBuilder: (context, index) {
+      final item = items[index];
+      return ListTile(
+        title: item.buildTitle(context),
+        subtitle: item.buildSubtitle(context),
+      );
+    },
+  );
 }
